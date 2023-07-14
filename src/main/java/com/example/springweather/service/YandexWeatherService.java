@@ -9,31 +9,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
-public class OpenWeatherMapService implements WeatherService {
-    @Value(value = "${weather.openweathermap.token}")
+public class YandexWeatherService implements WeatherService {
+    @Value(value = "${weather.yandexweather.token}")
     private  String token;
+    private final String WEATHER_API_URL = "https://api.weather.yandex.ru/v2/forecast?" +
+            "lang=ru_RU" +
+            "&limit=1" +
+            "&hours=false";
 
-    private String WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/onecall?" +
-            "units=metric" +
-            "&lang=ru" +
-            "&exclude=minutely,hourly,daily,alerts" +
-            "&appid=" + token;
 
     @Override
     public Map getWeatherByLongitudeAndLatitude(String longitude, String latitude) {
         RestTemplate restTemplate = new RestTemplate();
-        String apiUrl = WEATHER_API_URL + "&lat=" + latitude + "&lon=" + longitude;
         HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Yandex-API-Key", token);
         HttpEntity entity = new HttpEntity<>(headers);
+        String apiUrl = WEATHER_API_URL + "&lat=" + latitude + "&lon=" + longitude;
         ResponseEntity<Map> mapResponseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, Map.class);
         if (mapResponseEntity.getStatusCode().is2xxSuccessful()) {
-            Map currentWeatherMap = (Map) restTemplate.getForObject(apiUrl, Map.class).get("current");
+            Map currentWeatherMap = (Map) mapResponseEntity.getBody().get("fact");
             String temperature = String.valueOf(currentWeatherMap.get("temp"));
-            String condition = (String) ((Map) ((List) currentWeatherMap.get("weather")).get(0)).get("description");
+            String condition = String.valueOf(currentWeatherMap.get("condition"));
             Map<String, String> weatherMap = new LinkedHashMap<>();
             weatherMap.put("temperature", temperature);
             weatherMap.put("condition", condition);
