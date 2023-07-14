@@ -19,7 +19,7 @@ import java.util.Map;
 public class CityService {
 
 
-    private final String CITY_API_URL = "https://nominatim.openstreetmap.org/search?format=json&city=";
+    private final String CITY_API_URL = "https://nominatim.openstreetmap.org/search?format=json&accept-language=ru&city=";
     private final CityRepository cityRepository;
 
     public CityService(CityRepository cityRepository) {
@@ -38,11 +38,12 @@ public class CityService {
                 return null;
             }
             else {
-                HashMap map = (HashMap) list.get(0);
-                String latitude = (String) map.get("lat");
-                String longitude = (String) map.get("lon");
+                HashMap dataMap = (HashMap) list.get(0);
+                String latitude = (String) dataMap.get("lat");
+                String longitude = (String) dataMap.get("lon");
+                String cityName = dataMap.get("display_name").toString().split(", ")[0];
                 city = new City();
-                city.setName(name);
+                city.setName(cityName);
                 city.setLatitude(latitude);
                 city.setLongitude(longitude);
                 return cityRepository.save(city);

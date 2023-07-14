@@ -2,6 +2,8 @@ package com.example.springweather.service;
 
 import com.example.springweather.entity.City;
 
+import java.util.Map;
+
 public interface WeatherService {
-    Double getTemperatureByCity(City city);
+    Map getTemperatureByCity(City city);
 }
