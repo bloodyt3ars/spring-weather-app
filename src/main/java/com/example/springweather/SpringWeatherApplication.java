@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+
 @SpringBootApplication
 public class SpringWeatherApplication {
 
@@ -16,6 +17,6 @@ public class SpringWeatherApplication {
         /*SpringApplication.run(SpringWeatherApplication.class, args).getBean(YandexWeatherService.class).getWeatherByLongitudeAndLatitude( "37.6174943", "55.7504461");*/
         /*SpringApplication.run(SpringWeatherApplication.class, args).getBean(OpenWeatherMapService.class).getWeatherByLongitudeAndLatitude( "37.6174943", "55.7504461");*/
         /*SpringApplication.run(SpringWeatherApplication.class, args).getBean(CityService.class).findByName("СПБ");*/
-        }
+    }
 
 }

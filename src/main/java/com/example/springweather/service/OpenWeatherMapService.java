@@ -15,23 +15,23 @@ import java.util.Map;
 @Service
 public class OpenWeatherMapService implements WeatherService {
     @Value(value = "${weather.openweathermap.token}")
-    private  String token;
+    private String token;
 
     private String WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/onecall?" +
             "units=metric" +
             "&lang=ru" +
             "&exclude=minutely,hourly,daily,alerts" +
-            "&appid=" + token;
+            "&appid=";
 
     @Override
     public Map getWeatherByLongitudeAndLatitude(String longitude, String latitude) {
         RestTemplate restTemplate = new RestTemplate();
-        String apiUrl = WEATHER_API_URL + "&lat=" + latitude + "&lon=" + longitude;
+        String apiUrl = WEATHER_API_URL + token + "&lat=" + latitude + "&lon=" + longitude;
         HttpHeaders headers = new HttpHeaders();
-        HttpEntity entity = new HttpEntity<>(headers);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
         ResponseEntity<Map> mapResponseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, Map.class);
         if (mapResponseEntity.getStatusCode().is2xxSuccessful()) {
-            Map currentWeatherMap = (Map) restTemplate.getForObject(apiUrl, Map.class).get("current");
+            Map<String, Object> currentWeatherMap = (Map) restTemplate.getForObject(apiUrl, Map.class).get("current");
             String temperature = String.valueOf(currentWeatherMap.get("temp"));
             String condition = (String) ((Map) ((List) currentWeatherMap.get("weather")).get(0)).get("description");
             Map<String, String> weatherMap = new LinkedHashMap<>();

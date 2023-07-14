@@ -26,22 +26,22 @@ public class CityService {
         this.cityRepository = cityRepository;
     }
 
-    public City findByName(String name){
-        City city = cityRepository.findByName(name);
+    public City findByName(String cityName) throws IllegalArgumentException{
+        City city = cityRepository.findByName(cityName);
         if (city != null) {
             return city;
         } else {
             RestTemplate restTemplate = new RestTemplate();
-            String apiUrl = CITY_API_URL + name;
-            List list = restTemplate.getForObject(apiUrl, List.class);
-            if (list.size()==0){
-                return null;
+            String apiUrl = CITY_API_URL + cityName;
+            List<Map<String, Object>> response = restTemplate.getForObject(apiUrl, List.class);
+            if (response.size()==0){
+                throw new IllegalArgumentException("Incorrect city name");
             }
             else {
-                HashMap dataMap = (HashMap) list.get(0);
+                Map<String, Object> dataMap = (Map) response.get(0);
                 String latitude = (String) dataMap.get("lat");
                 String longitude = (String) dataMap.get("lon");
-                String cityName = dataMap.get("display_name").toString().split(", ")[0];
+                cityName = dataMap.get("display_name").toString().split(", ")[0];
                 city = new City();
                 city.setName(cityName);
                 city.setLatitude(latitude);

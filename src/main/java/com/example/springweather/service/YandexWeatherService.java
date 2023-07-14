@@ -30,7 +30,7 @@ public class YandexWeatherService implements WeatherService {
         String apiUrl = WEATHER_API_URL + "&lat=" + latitude + "&lon=" + longitude;
         ResponseEntity<Map> mapResponseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, Map.class);
         if (mapResponseEntity.getStatusCode().is2xxSuccessful()) {
-            Map currentWeatherMap = (Map) mapResponseEntity.getBody().get("fact");
+            Map<String, Object> currentWeatherMap = (Map) mapResponseEntity.getBody().get("fact");
             String temperature = String.valueOf(currentWeatherMap.get("temp"));
             String condition = String.valueOf(currentWeatherMap.get("condition"));
             Map<String, String> weatherMap = new LinkedHashMap<>();

@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
-public class WeatherServiceImpl {
+public class WeatherServiceFacade {
     @Value(value = "${weather.defaultService}")
     private String defaultService;
 
@@ -16,17 +16,17 @@ public class WeatherServiceImpl {
     private final WeatherService openWeatherMapService;
     private final WeatherService yandexWeatherService;
 
-    public WeatherServiceImpl(CityService cityService, WeatherService openWeatherMapService, WeatherService yandexWeatherService) {
+    public WeatherServiceFacade(CityService cityService, WeatherService openWeatherMapService, WeatherService yandexWeatherService) {
         this.cityService = cityService;
         this.openWeatherMapService = openWeatherMapService;
         this.yandexWeatherService = yandexWeatherService;
     }
 
-    public Map getWeatherByCity(String cityName) {
+    public Map getWeatherByCity(String cityName) throws IllegalArgumentException{
         return getWeatherByCityAndService(cityName, defaultService);
     }
 
-    public Map getWeatherByCityAndService(String cityName, String serviceName) {
+    public Map getWeatherByCityAndService(String cityName, String serviceName) throws IllegalArgumentException{
         City cityByName = cityService.findByName(cityName);
         if (cityByName != null) {
             Map<String, Object> responseMap = new LinkedHashMap<>();
@@ -45,13 +45,13 @@ public class WeatherServiceImpl {
         return null;
     }
 
-    private WeatherService getWeatherService(String serviceName) {
+    private WeatherService getWeatherService(String serviceName) throws IllegalArgumentException{
         if ("openweathermap".equalsIgnoreCase(serviceName)) {
             return openWeatherMapService;
         } else if ("yandexweather".equalsIgnoreCase(serviceName)) {
             return yandexWeatherService;
         } else {
-            return null;
+            throw new IllegalArgumentException("Unknown service name");
         }
     }
 }
