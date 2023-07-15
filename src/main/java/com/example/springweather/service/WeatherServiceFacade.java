@@ -3,6 +3,7 @@ package com.example.springweather.service;
 import com.example.springweather.entity.City;
 import com.example.springweather.exception.IncorrectServiceNameException;
 import com.example.springweather.exception.IncorrectСityNameException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,18 +20,18 @@ public class WeatherServiceFacade {
     private final WeatherService openWeatherMapService;
     private final WeatherService yandexWeatherService;
 
-    public WeatherServiceFacade(WeatherServiceRegistry weatherServiceRegistry, CityService cityService, WeatherService openWeatherMapService, WeatherService yandexWeatherService) {
+    public WeatherServiceFacade(WeatherServiceRegistry weatherServiceRegistry, CityService cityService, @Qualifier("openweathermap") WeatherService openWeatherMapService,@Qualifier("yandexweather") WeatherService yandexWeatherService) {
         this.weatherServiceRegistry = weatherServiceRegistry;
         this.cityService = cityService;
         this.openWeatherMapService = openWeatherMapService;
         this.yandexWeatherService = yandexWeatherService;
     }
 
-    public Map getWeatherByCity(String cityName) throws IncorrectServiceNameException, IncorrectСityNameException {
+    public Map<String, Object> getWeatherByCity(String cityName) throws IncorrectServiceNameException, IncorrectСityNameException {
         return getWeatherByCityAndService(cityName, defaultService);
     }
 
-    public Map getWeatherByCityAndService(String cityName, String serviceName) throws IncorrectServiceNameException, IncorrectСityNameException {
+    public Map<String, Object> getWeatherByCityAndService(String cityName, String serviceName) throws IncorrectServiceNameException, IncorrectСityNameException {
         City cityByName = cityService.findByName(cityName);
         if (cityByName != null) {
             Map<String, Object> responseMap = new LinkedHashMap<>();

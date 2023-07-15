@@ -23,10 +23,14 @@ public class OpenWeatherMapService implements WeatherService {
             "&lang=ru" +
             "&exclude=minutely,hourly,daily,alerts" +
             "&appid=";
+    private final RestTemplate restTemplate;
+
+    public OpenWeatherMapService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public Map getWeatherByLongitudeAndLatitude(String longitude, String latitude) {
-        RestTemplate restTemplate = new RestTemplate();
         String apiUrl = WEATHER_API_URL + token + "&lat=" + latitude + "&lon=" + longitude;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<Void> entity = new HttpEntity<>(headers);

@@ -15,9 +15,11 @@ public class CityService {
 
     private final String CITY_API_URL = "https://nominatim.openstreetmap.org/search?format=json&accept-language=ru&city=";
     private final CityRepository cityRepository;
+    private final RestTemplate restTemplate;
 
-    public CityService(CityRepository cityRepository) {
+    public CityService(CityRepository cityRepository, RestTemplate restTemplate) {
         this.cityRepository = cityRepository;
+        this.restTemplate = restTemplate;
     }
 
     public City findByName(String cityName) throws IncorrectСityNameException {
@@ -36,7 +38,6 @@ public class CityService {
     }
 
     private Map<String, Object> getCityCoordinateFromAPI(String cityName) throws IncorrectСityNameException {
-        RestTemplate restTemplate = new RestTemplate();
         String apiUrl = CITY_API_URL + cityName;
         List<Map<String, Object>> response = restTemplate.getForObject(apiUrl, List.class);
         if (response != null && !response.isEmpty()) {
@@ -44,7 +45,7 @@ public class CityService {
         }
         return null;
     }
-    public City createCity(Map<String, Object> coordinates){
+    private City createCity(Map<String, Object> coordinates){
         City city = new City();
         String latitude = (String) coordinates.get("lat");
         String longitude = (String) coordinates.get("lon");

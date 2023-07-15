@@ -20,14 +20,18 @@ public class YandexWeatherService implements WeatherService {
             "lang=ru_RU" +
             "&limit=1" +
             "&hours=false";
+    private final RestTemplate restTemplate;
+
+    public YandexWeatherService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
 
     @Override
-    public Map getWeatherByLongitudeAndLatitude(String longitude, String latitude) {
-        RestTemplate restTemplate = new RestTemplate();
+    public Map<String, String> getWeatherByLongitudeAndLatitude(String longitude, String latitude) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Yandex-API-Key", token);
-        HttpEntity entity = new HttpEntity<>(headers);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
         String apiUrl = WEATHER_API_URL + "&lat=" + latitude + "&lon=" + longitude;
         ResponseEntity<Map> mapResponseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, Map.class);
         if (mapResponseEntity.getStatusCode().is2xxSuccessful()) {
