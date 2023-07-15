@@ -1,6 +1,8 @@
 package com.example.springweather.controller;
 
 import com.example.springweather.exception.ErrorResponse;
+import com.example.springweather.exception.IncorrectServiceNameException;
+import com.example.springweather.exception.IncorrectСityNameException;
 import com.example.springweather.service.WeatherServiceFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,8 @@ public class WeatherController {
     }
 
     @GetMapping("{cityName}")
-    public ResponseEntity<?> getWeather(@PathVariable String cityName, @RequestParam(required = false) String serviceName) {
+    public ResponseEntity<?> getWeather(@PathVariable String cityName, @RequestParam(required = false) String serviceName)
+            throws IncorrectСityNameException, IncorrectServiceNameException {
         Map<String, String> weatherByCity;
         if (serviceName != null) {
             weatherByCity = weatherService.getWeatherByCityAndService(cityName, serviceName);
@@ -31,15 +34,9 @@ public class WeatherController {
 
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
-        ErrorResponse errorResponse = new ErrorResponse("Exception", ex.getMessage());
-        return ResponseEntity.badRequest().body(errorResponse);
+    @ExceptionHandler({IncorrectServiceNameException.class, IncorrectСityNameException.class})
+    public ResponseEntity<String> handleIllegalArgumentException(Exception ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-        ErrorResponse errorResponse = new ErrorResponse("Exception", ex.getMessage());
-        return ResponseEntity.badRequest().body(errorResponse);
-    }
 }

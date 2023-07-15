@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@WeatherServiceAnnotation(value = "openweathermap")
 @Service
 public class OpenWeatherMapService implements WeatherService {
     @Value(value = "${weather.openweathermap.token}")

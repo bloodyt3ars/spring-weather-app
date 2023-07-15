@@ -1,6 +1,8 @@
 package com.example.springweather.service;
 
 import com.example.springweather.entity.City;
+import com.example.springweather.exception.IncorrectServiceNameException;
+import com.example.springweather.exception.IncorrectСityNameException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,21 +14,23 @@ public class WeatherServiceFacade {
     @Value(value = "${weather.defaultService}")
     private String defaultService;
 
+    private final WeatherServiceRegistry weatherServiceRegistry;
     private final CityService cityService;
     private final WeatherService openWeatherMapService;
     private final WeatherService yandexWeatherService;
 
-    public WeatherServiceFacade(CityService cityService, WeatherService openWeatherMapService, WeatherService yandexWeatherService) {
+    public WeatherServiceFacade(WeatherServiceRegistry weatherServiceRegistry, CityService cityService, WeatherService openWeatherMapService, WeatherService yandexWeatherService) {
+        this.weatherServiceRegistry = weatherServiceRegistry;
         this.cityService = cityService;
         this.openWeatherMapService = openWeatherMapService;
         this.yandexWeatherService = yandexWeatherService;
     }
 
-    public Map getWeatherByCity(String cityName) throws IllegalArgumentException{
+    public Map getWeatherByCity(String cityName) throws IncorrectServiceNameException, IncorrectСityNameException {
         return getWeatherByCityAndService(cityName, defaultService);
     }
 
-    public Map getWeatherByCityAndService(String cityName, String serviceName) throws IllegalArgumentException{
+    public Map getWeatherByCityAndService(String cityName, String serviceName) throws IncorrectServiceNameException, IncorrectСityNameException {
         City cityByName = cityService.findByName(cityName);
         if (cityByName != null) {
             Map<String, Object> responseMap = new LinkedHashMap<>();
@@ -45,13 +49,7 @@ public class WeatherServiceFacade {
         return null;
     }
 
-    private WeatherService getWeatherService(String serviceName) throws IllegalArgumentException{
-        if ("openweathermap".equalsIgnoreCase(serviceName)) {
-            return openWeatherMapService;
-        } else if ("yandexweather".equalsIgnoreCase(serviceName)) {
-            return yandexWeatherService;
-        } else {
-            throw new IllegalArgumentException("Unknown service name");
-        }
+    private WeatherService getWeatherService(String serviceName) throws IncorrectServiceNameException {
+        return weatherServiceRegistry.getWeatherService(serviceName);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@WeatherServiceAnnotation(value = "yandexweather")
 @Service
 public class YandexWeatherService implements WeatherService {
     @Value(value = "${weather.yandexweather.token}")
