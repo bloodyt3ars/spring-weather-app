@@ -1,4 +1,4 @@
-package com.example.springweather.configure;
+package com.example.springweather.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
