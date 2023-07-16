@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Example;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
@@ -65,6 +66,7 @@ class CityServiceTest {
         assertEquals(createdCity, result);
         verify(cityRepository, times(1)).findByName(CITY_NAME);
         verify(cityRepository, times(1)).save(createdCity);
+        verify(cityRepository,times(1)).exists(Example.of(createdCity));
         verify(restTemplate, times(1)).getForObject(anyString(), eq(List.class));
         verifyNoMoreInteractions(cityRepository, restTemplate);
     }

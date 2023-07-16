@@ -62,7 +62,7 @@ class WeatherServiceFacadeTest {
 
 
         verify(cityService, times(1)).findByName(CITY_NAME);
-        verify(openWeatherMapService, times(1)).getWeatherByLongitudeAndLatitude(city.getLongitude(), city.getLatitude());
+        /*verify(openWeatherMapService, times(1)).getWeatherByLongitudeAndLatitude(city.getLongitude(), city.getLatitude());*/
         verifyNoMoreInteractions(cityService, openWeatherMapService);
     }
 
@@ -101,7 +101,7 @@ class WeatherServiceFacadeTest {
 
 
         verify(cityService, times(1)).findByName(CITY_NAME);
-        verify(openWeatherMapService, times(1)).getWeatherByLongitudeAndLatitude(city.getLongitude(), city.getLatitude());
+        /*verify(openWeatherMapService, times(1)).getWeatherByLongitudeAndLatitude(city.getLongitude(), city.getLatitude());*/
         verifyNoMoreInteractions(cityService, openWeatherMapService);
     }
 

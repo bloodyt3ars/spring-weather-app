@@ -3,6 +3,7 @@ package com.example.springweather.service;
 import com.example.springweather.entity.City;
 import com.example.springweather.exception.IncorrectСityNameException;
 import com.example.springweather.repository.CityRepository;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,6 +33,9 @@ public class CityService {
                 throw new IncorrectСityNameException();
             } else {
                 city = createCity(coordinate);
+                if (cityRepository.exists(Example.of(city))){
+                    return cityRepository.findByName(city.getName());
+                }
                 return cityRepository.save(city);
             }
         }
