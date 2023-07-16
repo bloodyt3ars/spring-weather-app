@@ -78,7 +78,7 @@ public class WeatherControllerIntegrationTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/weather/{cityName}", cityName)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(content().string("Incorrect city name"));
     }
 

@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15.2
+    container_name: postgres_weather
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready","-d","postgres","-U","postgres" ]
+      interval: 5s
+      timeout: 1s
+      retries: 5
+      start_period: 5s
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "weather"
+    volumes:
+      - ./src/main/resources/initDB.sql:/docker-entrypoint-initdb.d/initDB.sql
+    restart: always
+  app:
+    image: bloodyt3ars/weather-app:release
+    restart: always
+    container_name: weather-app
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_weather:5432/weather
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=admin
+    depends_on:
+      postgres:
+        condition: service_healthy
