@@ -38,39 +38,48 @@ SpringWeather предоставляет RESTful API, который позво�
 │   │   └───com
 │   │       └───example
 │   │           └───springweather
-│   │               ├───configure
+│   │               │   SpringWeatherApplication.java
+│   │               │
+│   │               ├───city
+│   │               │       CityDto.java
+│   │               │       CityEntity.java
+│   │               │       CityMapper.java
+│   │               │       CityMapperImpl.java
+│   │               │       CityRepository.java
+│   │               │       CityService.java
+│   │               │
+│   │               ├───config
 │   │               │       Conf.java
 │   │               │       OpenApiConfig.java
-│   │               ├───controller
-│   │               │       WeatherController.java
-│   │               ├───entity
-│   │               │       City.java
+│   │               │
 │   │               ├───exception
 │   │               │       IncorrectServiceNameException.java
 │   │               │       IncorrectСityNameException.java
-│   │               ├───repository
-│   │               │       CityRepository.java
-│   │               └───service
-│   │                       CityService.java
+│   │               │       InternalErrorException.java
+│   │               │
+│   │               └───weather
 │   │                       OpenWeatherMapService.java
+│   │                       WeatherController.java
+│   │                       WeatherDto.java
 │   │                       WeatherService.java
 │   │                       WeatherServiceAnnotation.java
 │   │                       WeatherServiceFacade.java
-│   │                       WeatherServiceRegistry.java
 │   │                       YandexWeatherService.java
+│   │
 │   └───resources
 │           application.properties
+│           initDB.sql
+│
 └───test
     ├───java
     │   └───com
     │       └───example
     │           └───springweather
-    │               ├───controller
-    │               │       WeatherControllerIntegrationTest.java
-    │               └───service
-    │                       CityServiceTest.java
-    │                       WeatherServiceFacadeTest.java
-    │                       WeatherServiceRegistryTest.java
+    │               │   SpringWeatherApplicationTests.java
+    │               │
+    │               └───weather
+    │                       WeatherControllerIntegrationTest.java
+    │
     └───resources
             application-test.properties
             test-data.sql

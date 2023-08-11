@@ -1,4 +1,4 @@
-package com.example.springweather.controller;
+package com.example.springweather.weather;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,8 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -24,21 +25,21 @@ public class WeatherControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private WeatherController weatherController;
+    WeatherController weatherController;
+    private static final String API_WEATHER = "/weather".concat("/{cityName}");
 
     @Test
     public void testGetWeatherByCity() throws Exception {
 
-        String cityName = "London";
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/weather/{cityName}", cityName)
-                        .contentType(MediaType.APPLICATION_JSON))
+        String cityName = "Лондон";
+        this.mockMvc.perform(get(API_WEATHER, cityName))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.City").value("Лондон"))
-                .andExpect(jsonPath("$.lat").value("51.5073359"))
-                .andExpect(jsonPath("$.lon").value("-0.12765"))
-                .andExpect(jsonPath("$.weather.temperature").exists())
-                .andExpect(jsonPath("$.weather.condition").exists());
+                .andExpect(jsonPath("$.city").value("Лондон"))
+                .andExpect(jsonPath("$.latitude").value("51.5073"))
+                .andExpect(jsonPath("$.longitude").value("-0.1277"))
+                .andExpect(jsonPath("$.temperature").exists())
+                .andExpect(jsonPath("$.description").exists());
     }
 
     @Test
@@ -48,25 +49,27 @@ public class WeatherControllerIntegrationTest {
         String openServiceName = "openweathermap";
         String yandexServiceName = "yandexweather";
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/weather/{cityName}", cityName)
-                        .param("serviceName", openServiceName)
+        mockMvc.perform(get(API_WEATHER, cityName)
+                        .queryParam("serviceName", openServiceName)
                         .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.City").value("Лондон"))
-                .andExpect(jsonPath("$.lat").value("51.5073359"))
-                .andExpect(jsonPath("$.lon").value("-0.12765"))
-                .andExpect(jsonPath("$.weather.temperature").exists())
-                .andExpect(jsonPath("$.weather.condition").exists());
+                .andExpect(jsonPath("$.city").value("Лондон"))
+                .andExpect(jsonPath("$.latitude").value("51.5073"))
+                .andExpect(jsonPath("$.longitude").value("-0.1277"))
+                .andExpect(jsonPath("$.temperature").exists())
+                .andExpect(jsonPath("$.description").exists());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/weather/{cityName}", cityName)
-                        .param("serviceName", yandexServiceName)
+        mockMvc.perform(get(API_WEATHER, cityName)
+                        .queryParam("serviceName", yandexServiceName)
                         .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.City").value("Лондон"))
-                .andExpect(jsonPath("$.lat").value("51.5073359"))
-                .andExpect(jsonPath("$.lon").value("-0.12765"))
-                .andExpect(jsonPath("$.weather.temperature").exists())
-                .andExpect(jsonPath("$.weather.condition").exists());
+                .andExpect(jsonPath("$.city").value("Лондон"))
+                .andExpect(jsonPath("$.latitude").value("51.5073359"))
+                .andExpect(jsonPath("$.longitude").value("-0.12765"))
+                .andExpect(jsonPath("$.temperature").exists())
+                .andExpect(jsonPath("$.description").exists());
 
 
     }
@@ -76,7 +79,7 @@ public class WeatherControllerIntegrationTest {
 
         String cityName = "РандомныйГородСНевернымНазванием";
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/weather/{cityName}", cityName)
+        mockMvc.perform(get(API_WEATHER, cityName)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Incorrect city name"));
@@ -89,8 +92,8 @@ public class WeatherControllerIntegrationTest {
         String serviceName = "НеправильноеИмяСервиса";
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/weather/{cityName}", cityName)
-                        .param("serviceName", serviceName)
+        mockMvc.perform(get(API_WEATHER, cityName)
+                        .queryParam("serviceName", serviceName)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Unknown service name"));

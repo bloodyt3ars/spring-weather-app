@@ -1,7 +1,11 @@
 openapi: 3.0.1
 info:
-  title: OpenAPI definition
-  version: v1
+  title: Weather
+  description: Проект по получению данных о погоде по названию города
+  contact:
+    name: Antonov Vladimir
+    url: https://t.me/bloodyt3ars
+  version: 1.0.0
 servers:
   - url: http://localhost:8080
     description: Generated server url
@@ -13,7 +17,7 @@ paths:
     get:
       tags:
         - weather
-      summary: Получить погоду по его названию
+      description: Получить погоду по названию города
       operationId: getWeather
       parameters:
         - name: cityName
@@ -32,20 +36,45 @@ paths:
           example: yandexweather
       responses:
         '200':
-          description: Все прошло успешно, город найден
+          description: Все прошло успешно, город найден, погода получена
+          content:
+            '*/*':
+              schema:
+                type: object
+        '400':
+          description: Некорректный запрос
+          content:
+            '*/*':
+              schema:
+                type: object
+        '500':
+          description: Внутренняя ошибка
           content:
             application/json:
               schema:
-                type: string
-                example:
-                  City: Санкт-Петербург
-                  lat: '59.938732'
-                  lon: '30.316229'
-                  weather:
-                    temperature: '24.43'
-                    condition: ясно
-        '400':
-          description: Unknown service name
-        '404':
-          description: Incorrect city name
-components: {}
+                $ref: '#/components/schemas/WeatherDto'
+components:
+  schemas:
+    WeatherDto:
+      type: object
+      properties:
+        city:
+          type: string
+          description: Название города
+          example: Санкт-Петербург
+        latitude:
+          type: string
+          description: Широта
+          example: '59.938732'
+        longitude:
+          type: string
+          description: Широта
+          example: '30.316229'
+        temperature:
+          type: string
+          description: Температура
+          example: '21.04'
+        description:
+          type: string
+          description: Описание
+          example: Небольшая облачность
