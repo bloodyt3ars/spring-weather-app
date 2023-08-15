@@ -38,7 +38,7 @@ public class WeatherController {
                                         @RequestParam(required = false)
                                         @Parameter(description = "Название сервиса погоды", example = "yandexweather", required = false)
                                         String serviceName)
-            throws IncorrectСityNameException, IncorrectServiceNameException, InternalErrorException {
+            throws Exception {
         WeatherDto weatherByCity = serviceName != null
                 ? weatherServiceFacade.getWeatherByCityAndService(cityName, serviceName)
                 : weatherServiceFacade.getWeatherByCity(cityName);
